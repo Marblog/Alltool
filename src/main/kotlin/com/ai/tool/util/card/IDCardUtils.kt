@@ -1,4 +1,4 @@
-package com.example.card.util.card
+package com.ai.tool.util.card
 
 import java.text.SimpleDateFormat
 import java.util.*
@@ -28,16 +28,36 @@ class IDCardUtils {
         /**
          * 解析身份证号码获取出生日期和性别
          */
-        fun parseIDCard(idCard: String): Pair<Date, String>? {
+        fun parseIDCard(idCard: String): String? {
             if (!isValidIDCard(idCard)) {
                 return null
             }
-            val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
-            val birthDate = dateFormat.parse(idCard.substring(6, 14))
-
             val genderCode = idCard.substring(16, 17).toInt()
-            val gender = if (genderCode % 2 == 0) "女" else "男"
-            return Pair(birthDate, gender)
+            return if (genderCode % 2 == 0) "女" else "男"
+        }
+
+        private fun extractBirthDateFromIdCard(idCard: String): Date {
+            val birthDateString = idCard.substring(6, 14)
+            val dateFormat = SimpleDateFormat("yyyyMMdd")
+            return dateFormat.parse(birthDateString)
+        }
+
+        private fun calculateAge(birthDate: Date): Int {
+            val now = Calendar.getInstance()
+            val birthCalendar = Calendar.getInstance()
+            birthCalendar.time = birthDate
+
+            var age = now.get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR)
+            if (now.get(Calendar.DAY_OF_YEAR) < birthCalendar.get(Calendar.DAY_OF_YEAR)) {
+                age--
+            }
+            return age
+        }
+
+        // 辅助方法，根据身份证号码计算年龄
+        fun calculateAgeFromIdCard(idCard: String): Int {
+            val birthDate = extractBirthDateFromIdCard(idCard)
+            return calculateAge(birthDate)
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.card.config
+package com.ai.tool.config
 
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean

@@ -1,14 +1,14 @@
-package com.example.card.service.impl
+package com.ai.tool.service.impl
 
+import com.ai.tool.entity.Area
+import com.ai.tool.entity.Card
+import com.ai.tool.mapper.AreaMapper
+import com.ai.tool.service.AreaService
+import com.ai.tool.util.GenerateRandomCode
+import com.ai.tool.util.card.IDCardUtils
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
-import com.example.card.entity.Area
-import com.example.card.mapper.AreaMapper
-import com.example.card.service.AreaService
-import com.example.card.util.GenerateRandomCode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 
 @Service
@@ -56,10 +56,33 @@ class AreaServiceImpl : ServiceImpl<AreaMapper, Area>(), AreaService {
         return areaMapper.selectList(wrapper)
     }
 
-    override fun generateCode(areaCode: String, date: String): String {
-        val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-        val dateObject = LocalDateTime.parse(date, dateFormat)
-        val formattedDate = dateObject.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
-        return areaCode + formattedDate + GenerateRandomCode.generateRandomCode()
+    override fun generateCode(areaCode: String, date: String, sex: String): Card {
+        val formattedDate = date.replace("-", "")
+        val s = areaCode + formattedDate + GenerateRandomCode.generateRandomCode(sex)
+        val result = GenerateRandomCode.generateIdCard(s)
+        println(result)
+        val card = Card()
+        card.cardNo = result
+        return card
     }
+
+    override fun checkCard(cardNo: String): Card {
+        val card = Card()
+        card.cardNo = cardNo
+        val isIdCard = IDCardUtils.isValidIDCard(cardNo)
+        card.isValidIDCard = isIdCard
+        card.gender = IDCardUtils.parseIDCard(cardNo)
+        card.age = IDCardUtils.calculateAgeFromIdCard(cardNo)
+        val provinceCode = cardNo.substring(0, 2)
+        val cityCode = cardNo.substring(0, 4)
+        val areaCode = cardNo.substring(0, 6)
+
+        val areaKtQueryChainWrapper = ktQuery().wrapper.eq(Area::provinceCode, provinceCode).eq(Area::pid, 0)
+        val provinceName = areaMapper.selectOne(areaKtQueryChainWrapper).name
+        val cityName = areaMapper.selectOne(ktQuery().wrapper.eq(Area::cityCode, cityCode).eq(Area::level, 2)).name
+        val areaName = areaMapper.selectOne(ktQuery().wrapper.eq(Area::areaCode, areaCode).eq(Area::level, 3)).name
+        card.region = "$provinceName$cityName$areaName"
+        return card
+    }
+
 }

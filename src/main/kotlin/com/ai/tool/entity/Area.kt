@@ -1,4 +1,4 @@
-package com.example.card.entity
+package com.ai.tool.entity
 
 import com.baomidou.mybatisplus.annotation.TableId
 

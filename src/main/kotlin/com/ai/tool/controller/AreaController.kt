@@ -1,7 +1,8 @@
-package com.example.card.controller
+package com.ai.tool.controller
 
-import com.example.card.entity.Area
-import com.example.card.service.AreaService
+import com.ai.tool.entity.Area
+import com.ai.tool.entity.Card
+import com.ai.tool.service.AreaService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -22,7 +23,7 @@ class AreaController {
 
     @GetMapping("/city/{provinceCode}")
     fun getCity(@PathVariable provinceCode: String): List<Area> {
-        return areaService.getCity(provinceCode);
+        return areaService.getCity(provinceCode)
     }
 
     @GetMapping("/county/")
@@ -41,7 +42,13 @@ class AreaController {
     }
 
     @GetMapping("/generateCode/")
-    fun generateCode(areaCode: String, date: String): String {
-        return areaService.generateCode(areaCode, date)
+    fun generateCode(areaCode: String, date: String,sex:String): Card {
+        return areaService.generateCode(areaCode, date,sex)
+    }
+
+
+    @GetMapping("/checkCard/")
+    fun checkCard(cardNo: String): Card {
+        return areaService.checkCard(cardNo)
     }
 }

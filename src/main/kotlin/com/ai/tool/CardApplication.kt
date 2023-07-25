@@ -1,11 +1,11 @@
-package com.example.card
+package com.ai.tool
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class CardApplication
+class ToolApplication
 
 fun main() {
-    runApplication<CardApplication>()
+    runApplication<ToolApplication>()
 }

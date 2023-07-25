@@ -1,4 +1,4 @@
-package com.example.card.util.image
+package com.ai.tool.util.image
 
 import java.io.ByteArrayOutputStream
 import java.io.File

@@ -1,7 +1,7 @@
-package com.example.card
+package com.ai.tool
 
 
-import com.example.card.util.ip.IPUtils
+import com.ai.tool.util.ip.IPUtils
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 

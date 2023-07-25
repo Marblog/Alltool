@@ -7,8 +7,8 @@ plugins {
     kotlin("plugin.spring") version "1.6.21"
 }
 
-group = "com.example"
-version = "0.0.1-SNAPSHOT"
+group = "com.ai"
+version = "1.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -23,6 +23,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation ("com.baomidou:mybatis-plus-boot-starter:3.5.3.1")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation("com.github.pagehelper:pagehelper-spring-boot-starter:+")
     runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

@@ -1,3 +1,9 @@
 package com.ai.tool.entity
 
-data class Card()
+class Card {
+    var cardNo: String = ""
+    var region: String? = ""
+    var gender: String? = null
+    var age: Int? = null
+    var isValidIDCard: Boolean? = null
+}

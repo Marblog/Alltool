@@ -1,7 +1,7 @@
-package com.example.card.mapper
+package com.ai.tool.mapper
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper
-import com.example.card.entity.Area
+import com.ai.tool.entity.Area
 import org.apache.ibatis.annotations.Mapper
 
 @Mapper

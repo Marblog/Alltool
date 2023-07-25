@@ -1,4 +1,4 @@
-package com.example.card.util.ip
+package com.ai.tool.util.ip
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.net.InetAddress
