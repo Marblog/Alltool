@@ -139,7 +139,6 @@ class IPUtils {
             val request = Request.Builder()
                 .url("https://api.ipify.org?format=json")
                 .build()
-
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
                     return null
@@ -147,6 +146,10 @@ class IPUtils {
                 val responseBody = response.body?.string() ?: return null
                 return responseBody.split("\"")[3]
             }
+        }
+
+        fun getHostName(): String {
+            return InetAddress.getLocalHost().hostName
         }
     }
 }

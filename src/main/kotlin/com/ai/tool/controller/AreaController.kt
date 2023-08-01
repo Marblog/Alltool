@@ -42,8 +42,8 @@ class AreaController {
     }
 
     @GetMapping("/generateCode/")
-    fun generateCode(areaCode: String, date: String,sex:String): Card {
-        return areaService.generateCode(areaCode, date,sex)
+    fun generateCode(areaCode: String, date: String, sex: String, numbers: String): List<Card> {
+        return areaService.generateCode(areaCode, date, sex, numbers)
     }
 
 
@@ -51,4 +51,10 @@ class AreaController {
     fun checkCard(cardNo: String): Card {
         return areaService.checkCard(cardNo)
     }
+
+    @GetMapping("/query/")
+    fun queryText(queryText: String): List<Area> {
+        return areaService.queryText(queryText)
+    }
+
 }

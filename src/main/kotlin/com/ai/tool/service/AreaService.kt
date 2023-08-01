@@ -1,8 +1,8 @@
 package com.ai.tool.service
 
-import com.baomidou.mybatisplus.extension.service.IService
 import com.ai.tool.entity.Area
 import com.ai.tool.entity.Card
+import com.baomidou.mybatisplus.extension.service.IService
 
 
 interface AreaService :IService<Area>{
@@ -15,7 +15,9 @@ interface AreaService :IService<Area>{
 
     fun getVillage(provinceCode:String,cityCode:String,areaCode:String,streetCode:String):List<Area>
 
-    fun generateCode(areaCode:String,date:String,sex:String): Card
+    fun generateCode(areaCode: String, date: String, sex: String, numbers: String): List<Card>
 
     fun checkCard(cardNo:String):Card
+    fun queryText(queryText: String): List<Area>
+
 }

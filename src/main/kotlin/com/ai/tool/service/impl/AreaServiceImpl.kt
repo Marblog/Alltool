@@ -1,14 +1,17 @@
 package com.ai.tool.service.impl
 
+import com.ai.tool.config.RedisUtil
 import com.ai.tool.entity.Area
 import com.ai.tool.entity.Card
 import com.ai.tool.mapper.AreaMapper
 import com.ai.tool.service.AreaService
 import com.ai.tool.util.GenerateRandomCode
 import com.ai.tool.util.card.IDCardUtils
+import com.ai.tool.util.ip.IPUtils
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.concurrent.TimeUnit
 
 
 @Service
@@ -17,6 +20,8 @@ class AreaServiceImpl : ServiceImpl<AreaMapper, Area>(), AreaService {
     @Autowired
     lateinit var areaMapper: AreaMapper
 
+    @Autowired
+    lateinit var redisUtil: RedisUtil
     override fun getProvince(): List<Area> {
         // 查询省份数据，pid为0表示省份
         val wrapper = ktQuery().wrapper.eq(Area::pid, 0)
@@ -56,14 +61,25 @@ class AreaServiceImpl : ServiceImpl<AreaMapper, Area>(), AreaService {
         return areaMapper.selectList(wrapper)
     }
 
-    override fun generateCode(areaCode: String, date: String, sex: String): Card {
+    override fun generateCode(areaCode: String, date: String, sex: String, numbers: String): List<Card> {
+        val ip = IPUtils.getLocalIPAddress() + IPUtils.getHostName()
         val formattedDate = date.replace("-", "")
-        val s = areaCode + formattedDate + GenerateRandomCode.generateRandomCode(sex)
-        val result = GenerateRandomCode.generateIdCard(s)
-        println(result)
-        val card = Card()
-        card.cardNo = result
-        return card
+        val cards = ArrayList<Card>()
+        val currentCount = ip.let { redisUtil.incrementAndGetCurrentCount(it, TimeUnit.MINUTES.toMillis(30)) }
+        if (currentCount != null) {
+            if (currentCount > 5) {
+                throw RuntimeException("您的IP已经被限制生成，请过半小时再来吧！")
+            } else {
+                repeat(numbers.toInt()) {
+                    val s = areaCode + formattedDate + GenerateRandomCode.generateRandomCode(sex)
+                    val card = Card()
+                    val result = GenerateRandomCode.generateIdCard(s)
+                    card.cardNo = result
+                    cards.add(card)
+                }
+            }
+        }
+        return cards
     }
 
     override fun checkCard(cardNo: String): Card {
@@ -85,4 +101,8 @@ class AreaServiceImpl : ServiceImpl<AreaMapper, Area>(), AreaService {
         return card
     }
 
+    override fun queryText(queryText: String): List<Area> {
+        val ktQueryWrapper = ktQuery().wrapper.like(Area::name, queryText).eq(Area::level, 1)
+        return areaMapper.selectList(ktQueryWrapper)
+    }
 }
